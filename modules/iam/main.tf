@@ -20,7 +20,7 @@ POLICY
 }
 
 resource "aws_iam_role_policy_attachment" "role_policy" {
-  count = length(var.policy_arns)
+  count      = length(var.policy_arns)
   policy_arn = var.policy_arns[count.index]
-  role = aws_iam_role.role.name
+  role       = aws_iam_role.role.name
 }

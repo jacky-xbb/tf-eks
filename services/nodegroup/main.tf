@@ -1,11 +1,24 @@
 
 # IAM configuration
 
+terraform {
+  backend "s3" {
+
+    # This backend configuration is filled in automatically at test time by Terratest. If you wish to run this example
+    # manually, uncomment and fill in the config below.
+
+    bucket         = "test.chaos"
+    key            = "nodegroup/terraform.tfstate"
+    region         = "eu-west-1"
+    dynamodb_table = "chaos"
+  }
+}
+
 module "iam" {
   source = "../../modules/iam"
 
-  service = var.service
-  iam_name = var.iam_name
+  service     = var.service
+  iam_name    = var.iam_name
   policy_arns = var.policy_arns
 }
 
@@ -21,7 +34,7 @@ locals {
 }
 
 data "aws_subnet_ids" "selected" {
-  vpc_id = element(local.arn_lst, length(local.arn_lst)-1)
+  vpc_id = element(local.arn_lst, length(local.arn_lst) - 1)
 }
 
 ## Nodegroup
@@ -32,7 +45,7 @@ resource "aws_eks_node_group" "tf_node_grp" {
   node_role_arn   = module.iam.role_arn
   subnet_ids      = data.aws_subnet_ids.selected.ids
   instance_types  = var.instance_types
-  disk_size = var.disk_size
+  disk_size       = var.disk_size
 
   scaling_config {
     desired_size = var.scaling_config["desired_size"]

@@ -4,13 +4,13 @@
 # Route Table
 
 resource "aws_vpc" "tf_eks_vpc" {
-  cidr_block = "192.168.0.0/16"
-  enable_dns_support = true
+  cidr_block           = var.cidr_block
+  enable_dns_support   = true
   enable_dns_hostnames = true
 
   tags = {
-     Name = "${var.namespace}-vpc",
-     "kubernetes.io/cluster/${var.cluster_name}" = "shared",
+    Name                                        = "${var.namespace}-vpc",
+    "kubernetes.io/cluster/${var.cluster_name}" = "shared",
   }
 }
 
@@ -18,13 +18,13 @@ resource "aws_subnet" "tf_eks_subnet" {
   count = length(data.aws_availability_zones.available.names)
 
   availability_zone       = data.aws_availability_zones.available.names[count.index]
-  cidr_block              = "192.168.${count.index}.0/24"
+  cidr_block              = cidrsubnet(var.cidr_block, 4, count.index + 1)
   map_public_ip_on_launch = true
   vpc_id                  = aws_vpc.tf_eks_vpc.id
 
   tags = {
-     Name = "${var.namespace}-subnet",
-     "kubernetes.io/cluster/${var.cluster_name}" = "shared",
+    Name                                        = "${var.namespace}-subnet",
+    "kubernetes.io/cluster/${var.cluster_name}" = "shared",
   }
 }
 

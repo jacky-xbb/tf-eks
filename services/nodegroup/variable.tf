@@ -1,11 +1,11 @@
 variable "region" {
-  default = "ap-southeast-1"
-  type = string
+  default = "eu-west-1"
+  type    = string
 }
 
 variable "namespace" {
   default = "tf-eks"
-  type = string
+  type    = string
 }
 
 variable "cluster_name" {
@@ -15,17 +15,17 @@ variable "cluster_name" {
 
 variable "node_group_name" {
   default = "tf-emqx-group"
-  type = string
+  type    = string
 }
 
 variable "instance_types" {
   default = ["t2.medium"]
-  type = list
+  type    = list(any)
 }
 
 variable "disk_size" {
   default = 20
-  type = number
+  type    = number
 }
 
 variable "scaling_config" {
@@ -34,17 +34,18 @@ variable "scaling_config" {
     "max_size"     = 5
     "min_size"     = 1
   }
-  type = map
+  type = map(any)
 }
 
 ## IAM
 variable "iam_name" {
-  default = "tf-ng-iam-role"
+  # default = "tf-ng-iam-role"
+  default = "eksctl-managed-ng"
 }
 
 variable "service" {
   default = "ec2"
-  type = string
+  type    = string
 }
 
 variable "policy_arns" {
@@ -53,5 +54,5 @@ variable "policy_arns" {
     "arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy",
     "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
   ]
-  type = list
+  type = list(any)
 }

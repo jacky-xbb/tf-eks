@@ -1,6 +1,6 @@
 provider "aws" {
   profile = "root"
-  region = "${var.region}"
+  region  = var.region
 }
 
 provider "http" {}

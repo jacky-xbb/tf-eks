@@ -7,5 +7,5 @@ variable "iam_name" {
 }
 
 variable "policy_arns" {
-  type = list
+  type = list(any)
 }

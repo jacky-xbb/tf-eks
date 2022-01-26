@@ -3,56 +3,26 @@
 # EC2 Security Group to allow networking traffic with EKS cluster
 # EKS Cluster
 
-# resource "aws_iam_role" "tf-eks-role" {
-#   name = "tf_eks_iam_role"
+terraform {
+  backend "s3" {
 
-#   assume_role_policy = <<POLICY
-# {
-#   "Version": "2012-10-17",
-#   "Statement": [
-#     {
-#       "Effect": "Allow",
-#       "Principal": {
-#         "Service": "eks.amazonaws.com"
-#       },
-#       "Action": "sts:AssumeRole"
-#     }
-#   ]
-# }
-# POLICY
-# }
+    # This backend configuration is filled in automatically at test time by Terratest. If you wish to run this example
+    # manually, uncomment and fill in the config below.
 
-# resource "aws_iam_role_policy_attachment" "tf-eks-role-AmazonEKSClusterPolicy" {
-#   policy_arn = "arn:aws:iam::aws:policy/AmazonEKSClusterPolicy"
-#   role       = aws_iam_role.tf-eks-role.name
-# }
-
-# resource "aws_iam_role_policy_attachment" "tf-eks-role-AmazonEKSServicePolicy" {
-#   policy_arn = "arn:aws:iam::aws:policy/AmazonEKSServicePolicy"
-#   role       = aws_iam_role.tf-eks-role.name
-# }
-
-
-# OIDC config
-# data "tls_certificate" "cert" {
-#   url = aws_eks_cluster.tf-eks-cluster.identity[0].oidc[0].issuer
-# }
-
-# resource "aws_iam_openid_connect_provider" "cluster" {
-#   client_id_list  = ["sts.amazonaws.com"]
-#   thumbprint_list = [data.tls_certificate.cert.certificates[0].sha1_fingerprint]
-#   url             = aws_eks_cluster.tf-eks-cluster.identity[0].oidc[0].issuer
-# }
-
-#####################
+    bucket         = "test.chaos"
+    key            = "eks/terraform.tfstate"
+    region         = "eu-west-1"
+    dynamodb_table = "chaos"
+  }
+}
 
 # IAM configuration
 
 module "iam" {
   source = "../../modules/iam"
 
-  service = var.service
-  iam_name = var.iam_name
+  service     = var.service
+  iam_name    = var.iam_name
   policy_arns = var.policy_arns
 }
 
@@ -61,8 +31,9 @@ module "iam" {
 module "networking" {
   source = "../../modules/networking"
 
-  namespace = var.namespace
+  namespace    = var.namespace
   cluster_name = var.cluster_name
+  cidr_block   = var.base_cidr_block
 }
 
 # Security Group configuration
@@ -70,10 +41,10 @@ module "networking" {
 module "security_group" {
   source = "../../modules/security_group"
 
-  namespace = var.namespace
+  namespace                = var.namespace
   ingress_with_cidr_blocks = var.ingress_with_cidr_blocks
-  egress_with_cidr_blocks = var.egress_with_cidr_blocks
-  vpc_id = module.networking.vpc_id
+  egress_with_cidr_blocks  = var.egress_with_cidr_blocks
+  vpc_id                   = module.networking.vpc_id
 }
 
 resource "aws_security_group_rule" "cluster_ingress_workstation_https" {

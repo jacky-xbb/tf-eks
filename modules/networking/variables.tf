@@ -8,3 +8,6 @@ variable "cluster_name" {
 
 data "aws_availability_zones" "available" {}
 
+variable "cidr_block" {
+  type = string
+}

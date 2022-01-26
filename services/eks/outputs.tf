@@ -35,7 +35,7 @@ output "kubeconfig" {
 }
 
 output "subnet_ids" {
-  value       = module.networking.subnet_ids
+  value = module.networking.subnet_ids
 }
 
 
@@ -45,6 +45,6 @@ resource "null_resource" "update" {
   ]
 
   provisioner "local-exec" {
-    command     = "aws eks --region ${var.region} update-kubeconfig --name ${var.cluster_name}"
+    command = "aws eks --region ${var.region} update-kubeconfig --name ${var.cluster_name}"
   }
 }

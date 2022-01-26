@@ -11,12 +11,24 @@ export AWS_ACCESS_KEY_ID="anaccesskey"
 export AWS_SECRET_ACCESS_KEY="asecretkey"
 ```
 
+
+## Deploy s3
+### S3 configuration
+Note: You need to config them in the service modules manually
+
+```bash
+cd services/global/s3
+terraform init
+terraform plan
+terraform apply -auto-approve
+```
+
 ## Deploy eks
 ```bash
 cd services/eks
 terraform init
 terraform plan
-terraform apply -auto-approve
+terraform apply -auto-approve "-var=region=eu-west-1"
 ```
 
 ## Deploy nodegroup
@@ -24,7 +36,7 @@ terraform apply -auto-approve
 cd services/nodegroup
 terraform init
 terraform plan
-terraform apply -auto-approve
+terraform apply -auto-approve "-var=region=eu-west-1"
 ```
 
 > You can define parameters about instance_types, disk_size and scaling_config.
@@ -36,7 +48,7 @@ terraform apply -auto-approve
 cd services/efs
 terraform init
 terraform plan
-terraform apply -auto-approve
+terraform apply -auto-approve "-var=region=eu-west-1"
 ```
 
 ### Install eksctl

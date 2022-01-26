@@ -1,18 +1,18 @@
 data "aws_availability_zones" "available" {}
 
 variable "region" {
-  default = "ap-southeast-1"
-  type = string
+  default = ""
+  type    = string
 }
 
 variable "namespace" {
   default = "tf-efs"
-  type = string
+  type    = string
 }
 
 variable "eks_namespace" {
   default = "tf-eks"
-  type = string
+  type    = string
 }
 
 ## Security Group
